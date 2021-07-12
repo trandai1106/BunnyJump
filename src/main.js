@@ -6,7 +6,7 @@ import GameOver from './scenes/GameOver.js'
 export default new Phaser.Game({
     type: Phaser.AUTO,
     width: 480, 
-    height: 640,
+    height: 580,
     scene: [Game, GameOver],
     physics: {
         default: 'arcade',
@@ -14,7 +14,7 @@ export default new Phaser.Game({
             gravity: {
                 y: 400
             },
-            debug: true
+            debug: false
         }
     }
 })

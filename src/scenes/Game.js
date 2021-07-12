@@ -20,17 +20,17 @@ export default class Game extends Phaser.Scene {
 
     preload() {
         // load the background image
-        this.load.image('background', 'assets/bg_layer1.png')
+        this.load.image('background', 'assets/sprites/bg_layer1.png')
 
         // load the platform image
-        this.load.image('platform', 'assets/ground_grass.png')
+        this.load.image('platform', 'assets/sprites/ground_grass.png')
 
         // load the bunny image
-        this.load.image('bunny-stand', 'assets/bunny1_stand.png')
-        this.load.image('bunny-jump', 'assets/bunny1_jump.png')
+        this.load.image('bunny-stand', 'assets/sprites/bunny1_stand.png')
+        this.load.image('bunny-jump', 'assets/sprites/bunny1_jump.png')
 
         // load the carrot image
-        this.load.image('carrot', 'assets/carrot.png')
+        this.load.image('carrot', 'assets/sprites/carrot.png')
 
         // get key down
         this.cursors = this.input.keyboard.createCursorKeys()

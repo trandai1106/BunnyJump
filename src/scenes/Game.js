@@ -80,11 +80,27 @@ export default class Game extends Phaser.Scene {
             this
         )
 
-        // add collision detection
-        this.physics.add.collider(this.platforms, this.player)
         this.player.body.checkCollision.up = false
         this.player.body.checkCollision.left = false
         this.player.body.checkCollision.right = false
+
+        // add collision detection
+        this.physics.add.collider(
+            this.platforms, 
+            this.player, 
+            () => {
+                if (!this.player.body.touching.down) return
+
+                this.player.setVelocityY(-460)
+
+                // jumping animation
+                this.player.setTexture('bunny-jump')
+
+                // jumping sound effect
+                this.sound.play('jump')
+            }, 
+            undefined, 
+            this)
 
         // camera follow
         this.cameras.main.startFollow(this.player)
@@ -115,31 +131,16 @@ export default class Game extends Phaser.Scene {
             }            
         })
 
-        // collision detection
-        const touchingDown = this.player.body.touching.down
-
-        console.log()
-        if (touchingDown) {
-            // this makes the bunny jump straight up
-            this.player.setVelocityY(-500)
-
-            // jumping animation
-            this.player.setTexture('bunny-jump')
-
-            // jumping sound effect
-            this.sound.play('jump')
-        }
-
         // stand animation
         const vy = this.player.body.velocity.y
         if (vy > 0 && this.player.texture.key !== 'bunny-stand')
         this.player.setTexture('bunny-stand')
 
         // left and right input logic
-        if (this.cursors.left.isDown && !touchingDown) {
+        if (this.cursors.left.isDown && !this.player.body.touching.down) {
             this.player.setVelocityX(-200)
         }
-        else if (this.cursors.right.isDown && !touchingDown) {
+        else if (this.cursors.right.isDown && !this.player.body.touching.down) {
             this.player.setVelocityX(200)
         }
         else {

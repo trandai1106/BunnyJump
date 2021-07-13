@@ -11,12 +11,14 @@ export default class GameOver extends Phaser.Scene {
     }
 
     init (data) {
-        console.log(data)
         this.heightPoint = (data.heightPoint == null) ? 0 : data.heightPoint
         this.carrotCollected = (data.carrotCollected == null) ? 0 : data.carrotCollected
     }
 
     preload() {
+        // load the background image
+        this.load.image('background', 'assets/sprites/bg_layer1.png')
+
         // sound effect
         this.load.audio('lose', 'assets/sfx/lose.ogg')
         
@@ -25,6 +27,9 @@ export default class GameOver extends Phaser.Scene {
     }
 
     create() {
+        // create background
+        this.add.image(240, 320, 'background').setScrollFactor(1, 0)  
+
         this.IsTransparencyText = true;
 
         const width = this.scale.width
@@ -32,7 +37,7 @@ export default class GameOver extends Phaser.Scene {
 
         this.add.text(width * 0.5, height * 0.2, 'Height: ' + this.heightPoint + ' m', 
         { 
-            color: '#fff', 
+            color: '#000', 
             fontSize: 56, 
             fontFamily: 'monospace' 
         }).setOrigin(0.5)
@@ -42,22 +47,22 @@ export default class GameOver extends Phaser.Scene {
                 .setScale(0.8)
                 .setOrigin(0, 0.5) 
 
-        this.add.text(width * 0.3 + 70, height * 0.4, ' × ' + this.carrotCollected, 
+        this.add.text(width * 0.3 + 60, height * 0.4, ' × ' + this.carrotCollected, 
         { 
-            color: '#fff', 
+            color: '#000', 
             fontSize: 44, 
             fontFamily: 'monospace' 
         }).setOrigin(0, 0.5)
         
         this.add.text(width * 0.5, height * 0.6, 'Game Over', 
             { 
-                color: '#fff', 
+                color: '#000', 
                 fontSize: 50, 
                 fontFamily: 'monospace' 
             }).setOrigin(0.5)
-        this.text = this.add.text(width * 0.5, height * 0.7, 'Press SPACE to play again', 
+        this.text = this.add.text(width * 0.5, height * 0.75, 'Press SPACE to play again', 
             { 
-                color: '#fff', 
+                color: '#000', 
                 fontSize: 30, 
                 fontFamily: 'monospace' 
             }).setOrigin(0.5)
@@ -81,7 +86,7 @@ export default class GameOver extends Phaser.Scene {
             this.text.alpha += 0.01
         }
 
-        if (this.text.alpha <= 0.4 && this.IsTransparencyText) {
+        if (this.text.alpha <= 0.5 && this.IsTransparencyText) {
             this.IsTransparencyText = false
         }
         else if (this.text.alpha >= 1 && !this.IsTransparencyText) {

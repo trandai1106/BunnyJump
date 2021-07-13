@@ -7,14 +7,14 @@ export default new Phaser.Game({
     type: Phaser.AUTO,
     width: 480, 
     height: 580,
-    scene: [Game, GameOver],
+    scene: [GameOver, Game],
     physics: {
         default: 'arcade',
         arcade: {
             gravity: {
                 y: 400
             },
-            debug: true
+            debug: false
         }
     }
 })

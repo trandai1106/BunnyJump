@@ -7,8 +7,11 @@ export default class Game extends Phaser.Scene {
     platforms
     carrots
     cursors
-    carrotCollected = 0
+    carrotCollected
     carrotCollectedText
+    heightPoint
+    lastHeight
+    heightPointText
 
     constructor() {
         super('game')
@@ -16,6 +19,8 @@ export default class Game extends Phaser.Scene {
 
     init() {
         this.carrotCollected = 0
+        this.heightPoint = 0
+        this.lastHeight = 320
     }
 
     preload() {
@@ -41,10 +46,8 @@ export default class Game extends Phaser.Scene {
     }
     
     create() {
-        this.add.image(240, 320, 'background').setScrollFactor(1, 0)
-
         // create background
-        this.add.image(240, 320, 'background')
+        this.add.image(240, 320, 'background').setScrollFactor(1, 0)  
 
         // creat platforms
         this.platforms = this.physics.add.staticGroup()
@@ -63,7 +66,7 @@ export default class Game extends Phaser.Scene {
         }
 
         // create bunny - the player
-        this.player = this.physics.add.sprite(240, 320, 'bunny-stand').setScale(0.5)
+        this.player = this.physics.add.sprite(240, this.lastHeight, 'bunny-stand').setScale(0.5)
 
         // create a carrot
         this.carrots = this.physics.add.group({
@@ -91,6 +94,7 @@ export default class Game extends Phaser.Scene {
             () => {
                 if (!this.player.body.touching.down) return
 
+                // velocity
                 this.player.setVelocityY(-460)
 
                 // jumping animation
@@ -100,7 +104,8 @@ export default class Game extends Phaser.Scene {
                 this.sound.play('jump')
             }, 
             undefined, 
-            this)
+            this
+        )
 
         // camera follow
         this.cameras.main.startFollow(this.player)
@@ -109,10 +114,15 @@ export default class Game extends Phaser.Scene {
         this.cameras.main.setDeadzone(this.scale.width * 1.5, this.scale.height * 0.5)
 
         // render the score
-        const style = { color: '#000', fontSize: 26, fontFamily: 'monospace' }
-        this.carrotCollectedText = this.add.text(240, 16, 'Carrots: 0', style)
-                                                .setScrollFactor(0)
-                                                .setOrigin(0.5, 0)
+        this.add.image(20, 35, 'carrot').setScale(0.5).setScrollFactor(1, 0).setOrigin(0, 0.5) 
+        const style = { color: '#000', fontSize: 32, fontFamily: 'monospace' }
+        this.carrotCollectedText = this.add.text(58, 35, ' × 0', style)
+                                            .setScrollFactor(0)
+                                            .setOrigin(0, 0.5)
+
+        this.heightPointText = this.add.text(460, 35, this.heightPoint + ' m', style)
+                                        .setScrollFactor(0)
+                                        .setOrigin(1, 0.5)
     }
 
     update(time, deltaTime) {
@@ -123,11 +133,14 @@ export default class Game extends Phaser.Scene {
             const scrollY = this.cameras.main.scrollY
 
             if (platform.y >= scrollY + 700) {
-                platform.y = scrollY - Phaser.Math.Between(50, 100)
+                platform.y = scrollY - 60 //Phaser.Math.Between(50, 70)
                 platform.body.updateFromGameObject()
 
-                // create a carrot above the platform being reused
-                this.addCarrotAbove(platform)
+                // randomly create or not a carrot above the platform being reused
+                var rate = Phaser.Math.Between(0, 10)
+                if (rate >= 7) {
+                    this.addCarrotAbove(platform)
+                }
             }            
         })
 
@@ -149,10 +162,21 @@ export default class Game extends Phaser.Scene {
         
         this.horizontalWrap(this.player)
 
+        
+        // update height 
+        if (this.player.y < this.lastHeight) {
+            this.heightPoint += Math.round((this.lastHeight - this.player.y)/4)
+            this.lastHeight = this.player.y
+            this.heightPointText.text = this.heightPoint + ' m'
+        }
+
         // check Game Over
         const bottomPlatform = this.findBottomMostPlatform()
-        if (this.player.y > bottomPlatform.y + 200) {
-            this.scene.start('game-over')
+        if (this.player.y > bottomPlatform.y + 300) {
+            this.scene.start('game-over', {
+                heightPoint: this.heightPoint,
+                carrots: this.carrotCollected
+            })
         }
     }
 
@@ -208,7 +232,8 @@ export default class Game extends Phaser.Scene {
         this.carrotCollected++
 
         // update the score
-        const value = `Carrots: ${this.carrotCollected}`
+        //124, 20, ' × 0', style
+        const value = ` × ${this.carrotCollected}`
         this.carrotCollectedText.text = value
 
         // sound effect

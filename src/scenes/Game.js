@@ -175,7 +175,7 @@ export default class Game extends Phaser.Scene {
         if (this.player.y > bottomPlatform.y + 300) {
             this.scene.start('game-over', {
                 heightPoint: this.heightPoint,
-                carrots: this.carrotCollected
+                carrotCollected: this.carrotCollected
             })
         }
     }

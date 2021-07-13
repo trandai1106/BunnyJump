@@ -11,6 +11,7 @@ export default class GameOver extends Phaser.Scene {
     }
 
     init (data) {
+        console.log(data)
         this.heightPoint = (data.heightPoint == null) ? 0 : data.heightPoint
         this.carrotCollected = (data.carrotCollected == null) ? 0 : data.carrotCollected
     }

@@ -19,14 +19,21 @@ export default class GameOver extends Phaser.Scene {
         // load the background image
         this.load.image('background', 'assets/sprites/bg_layer1.png')
 
-        // sound effect
-        this.load.audio('lose', 'assets/sfx/lose.ogg')
-        
         // load the carrot image
         this.load.image('carrot', 'assets/sprites/carrot.png')
+
+        // sound effect
+        this.load.audio('lose', 'assets/sfx/lose.ogg')        
+        this.load.audio('background-music-lose-scene', 'assets/sfx/background_music_lose_scene.mp3')    
     }
 
     create() {
+        // sound 
+        this.sound.play('lose')
+        this.sound.play('background-music-lose-scene', {
+            loop: true
+        })
+
         // create background
         this.add.image(240, 320, 'background').setScrollFactor(1, 0)  
 
@@ -69,11 +76,9 @@ export default class GameOver extends Phaser.Scene {
 
         // play again by pressing space
         this.input.keyboard.once('keydown-SPACE', () => {
+            this.sound.stopAll()
             this.scene.start('game')
         })
-
-        // sound effect
-        this.sound.play('lose')
     }
 
     update() {

@@ -43,9 +43,15 @@ export default class Game extends Phaser.Scene {
         // sound effect
         this.load.audio('jump', 'assets/sfx/jump.ogg')
         this.load.audio('collect-carrot', 'assets/sfx/collect_carrot.ogg')
+        this.load.audio('background-music-play', 'assets/sfx/background_music_play_scene.mp3')
     }
     
     create() {
+        // background music
+        this.sound.play('background-music-play', {
+            loop: true
+        })
+
         // create background
         this.add.image(240, 320, 'background').setScrollFactor(1, 0)  
 
@@ -173,6 +179,7 @@ export default class Game extends Phaser.Scene {
         // check Game Over
         const bottomPlatform = this.findBottomMostPlatform()
         if (this.player.y > bottomPlatform.y + 300) {
+            this.sound.stopAll()
             this.scene.start('game-over', {
                 heightPoint: this.heightPoint,
                 carrotCollected: this.carrotCollected
